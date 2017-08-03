@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	body{
+		background: url(美国佛罗里达州棕榈海滩2.jpg);
+		background-size: 100% 200%;
+		font-size: 18px;
+		font-family: "微软雅黑";
+		color: #fff;
+	}
+	table{
+		width: 60%;
+		margin-left: 20%;
+		border-collapse:collapse;
+		border:1px solid #fff;
+	}
+	th,td{
+		text-align: center;
+	}
+	td a{
+		text-decoration: none;
+		color: #fff;
+		margin-right: 10px
+	}
+	td input{
+		color: #fff;
+		background: transparent;
+		border:none;
+		padding: 0 4px;
+		cursor: pointer;
+	}
+	p{
+		width: 50%;
+		margin-left: 39%;		
+	}
+	#top input{
+		border: 0;
+		border-radius: 10px;
+		margin-bottom: 20px;
+		margin-left: 5px;
+		height: 25px;
+		outline: none;
+		font-size: 16px;
+		padding-left: 10px;
+		color: #fff;
+		background: transparent;
+		cursor: pointer;
+	}
+	.someinput{
+		color: #fff;
+	}
+	.checkbox{
+		width: 15px;
+		height: 15px;
+		border-radius: 5px;
+	}
+	#firstp{
+		margin-top: 120px;
+	}
+	#top #form .input_a{
+		border: 1px solid #fff;
+	}
+    </style>
+</head>
+<body>	
+	<div id="box">
+		<div id="top">
+			<form action="" name="form" id="form">
+				<p id="firstp">
+					姓名:<input type="text" name="username" class="input_a"/>
+				</p>
+				<p>
+					年龄:<input type="text" name="age" class="input_a"/>
+				</p>
+				<p>
+					<input type="button" id="add" value="添加" name="add" class="someinput"/>
+				</p>
+			</form>
+			<p>
+				<input type="button" value="反选" class="someinput" id="Nchoose">
+				<input type="button" value="批量删除"  class="someinput" id="Someremove"> 
+			</p>
+		</div>
+		<div id="bottom">
+			<table id="tab1" width="100%" border="1">
+				<thead>
+				<tr>
+					<th>
+						<input id="checkAll" type="checkbox"/> 全选
+					</th>
+					<th>ID</th>
+					<th>姓名</th>
+					<th>年龄</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+		</div>
+	</div>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		var n=0;
+		//添加
+		$('#add').click(function(){
+			n++;
+			let val1=$('input[name="username"]').val();
+			let val2=$('input[name="age"]').val();
+			var newtr=$('<tr class="coutr"><td><input class="checkbox" type="checkbox" /></td><td class="trid">'+n+'</td><td>'+val1+'</td><td>'+val2+'</td><td><input type="button" value="上移" class="up"></input><input type="button" value="下移" class="down"></input><input type="button" value="删除" class="remove"></input></td></tr>')
+			$('tbody').append(newtr);
+			//删除
+			newtr.find('.remove').click(function(){
+				n--;
+				$(this).closest('tr').remove();
+				let trs = $('.coutr');
+				for(var i=n;i>0;i--){
+					trs.eq(n-i).find('.trid').text((n-i+1));
+				}
+				console.log(n)
+				getid();
+			})
+			// //上移
+			newtr.find('.up').click(function(){
+				let tr = $(this).closest('tr');
+				console.log(tr)
+				if(tr.index()!==0){
+					tr.insertBefore(tr.prev())
+				}
+				getid();
+			})
+			//下移
+			$('.down').click(function(){
+				let tr = $(this).closest('tr');
+				if(tr.index()!==(n-1)){
+					tr.insertAfter(tr.next())
+				}
+				getid();
+			})
+		})
+		//全选
+		$('#checkAll').click(function(){
+			let checks = $('.checkbox');
+			if(this.checked){
+				for(var i=0;i<checks.length;i++){
+					checks[i].checked = true;
+				}
+			}else{
+				for(var i=0;i<checks.length;i++){
+					checks[i].checked = false;
+				}
+			}
+
+		})
+		setInterval(function(){
+			checkbox();
+		},100)
+		//全选状态封装
+		function checkbox(){
+			var checks=$('.checkbox');
+			var m=0;
+			for(var i=0;i<checks.length;i++){
+				if(checks[i].checked){
+					m++;
+				}
+			}
+			if(m==n){
+				$('#checkAll')[0].checked=true;
+			}else{
+				$('#checkAll')[0].checked=false;
+			}
+		}
+		//反选
+		$('#Nchoose').click(function(){
+			var checks=$('.checkbox');
+			for(var i=0;i<checks.length;i++){
+				if(checks[i].checked){
+					checks[i].checked=!checks[i].checked
+				}else{
+					checks[i].checked=!checks[i].checked
+				}
+			}
+		})
+		//批量删除
+		$('#Someremove').click(function(){
+			var k=0;
+			var checks=$('.checkbox');
+			for(var i=0;i<checks.length;i++){
+				checks[i].index= i;
+				if(checks[i].checked){
+					k++;
+					$('tbody')[0].removeChild(checks[i].parentNode.parentNode);
+				}
+			}
+			n=n-k;
+			console.log(n)
+			getid();
+		})
+		//
+		function getid(){
+			var ids=$('.trid');
+			for(var i=0;i<n;i++){
+				ids[i].innerHTML=i+1;
+			}
+		}
+    </script>
+</body>
+</html>
